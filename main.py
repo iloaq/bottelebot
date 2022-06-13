@@ -30,13 +30,13 @@ def insert_data(message):
     if message.text == '🇷🇺':
         language = '🇷🇺'
         botdb.insert_users(user_id,language,currency,pay)
-        bot.send_message(message.chat.id, f'Выбран 🇷🇺\n Автоматически выставлены стандартные настройки:\n <b> Валюта : {currency} \nЦена за кВТ/ч : {pay} {currency}</b>', parse_mode='html')
+        bot.send_message(message.chat.id, f'Выбран 🇷🇺\n Автоматически выставлены стандартные настройки:\n <b> Валюта : {botdb.select_currency(user_id)} \nЦена за кВТ/ч : {botdb.select_pay(user_id)} {botdb.select_currency(user_id)}</b>', parse_mode='html')
         menu(message)
 
     elif message.text == '🇺🇸':
         language = '🇺🇸'
         botdb.insert_users(user_id, language, currency, pay)
-        bot.send_message(message.chat.id, 'Selected 🇺🇸\n The default settings are set automatically:\n <b> Currency : {currency} \nPrice per kW/h : {pay} {currency}</b>', parse_mode='html')
+        bot.send_message(message.chat.id, f'Selected 🇺🇸\n The default settings are set automatically:\n <b> Currency : {botdb.select_currency(user_id)} \nPrice per kW/h : {botdb.select_pay(user_id)} {botdb.select_currency(user_id)}</b>', parse_mode='html')
         menu(message)
 
     else:
@@ -46,8 +46,10 @@ def insert_data(message):
         msg = bot.send_message(message.chat.id, 'Ваш язык не используется', reply_markup=returnstart)
         bot.register_next_step_handler(msg, start)
 
+@bot.message_handler(commands=['menu'])
 def menu(message):
-    global lang
+    global lang, user_id
+    user_id = message.chat.id
     lang = botdb.select_lang(user_id)
     homebutton = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=1)
     calcbutton = types.KeyboardButton(words.message['calc_menu'][lang])
@@ -286,5 +288,13 @@ def settings_pay(message):
             errorinm = words.message['errorinm'][lang]
             msg = bot.send_message(message.chat.id, errorinm)
             bot.register_next_step_handler(msg, settings_pay)
+
+@bot.message_handler(content_types='text')
+def restart(message):
+    commandre = types.ReplyKeyboardMarkup()
+    but1=types.KeyboardButton('/start')
+    but2=types.KeyboardButton('/menu')
+    commandre.add(but2,but1)
+    bot.send_message(message.chat.id,'Произошла ошибка', reply_markup=commandre)
 
 bot.polling(none_stop=True)
