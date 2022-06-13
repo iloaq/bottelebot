@@ -7,7 +7,7 @@ import words
 import API
 import apicurrency
 
-bot = telebot.TeleBot('5542135993:AAGL9NWre9Lsfg1w3prlZDeQ5CJFmnHOEV4')
+bot = telebot.TeleBot('5505744557:AAFAF1qlsOAG3XXwhhFOTkIZbs_bUR9bDr0')
 botdb = DB()
 botdb.__init__()
 
