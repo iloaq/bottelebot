@@ -170,7 +170,7 @@ def call_minerlist(message):
             th = float(API.api_minerth(wordsminer))
             mes = float(30.33)
             dohod = int(btc_th*th*mes*btcapi*curapi)
-            rashod = int(float(API.api_minerenergy(wordsminer))*24*mes*pay)
+            rashod = round(float(API.api_minerenergy(wordsminer))*24*mes*pay,2)
             cash = dohod - rashod
             minercost = apicurrency.currency_data1(currency) * API.api_minercost(wordsminer)
             okup = int(minercost / cash)
