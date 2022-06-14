@@ -24,19 +24,23 @@ def start(message):
 def insert_data(message):
     global user_id
     user_id = message.chat.id
-    currency = 'RUB'
-    pay = 0
+    currency = 'USD'
+    pay = round(float(4.9/apicurrency.currency_data1('RUB')),3)
 
     if message.text == '🇷🇺':
         language = '🇷🇺'
         botdb.insert_users(user_id,language,currency,pay)
-        bot.send_message(message.chat.id, f'Выбран 🇷🇺\n Автоматически выставлены стандартные настройки:\n <b> Валюта : {botdb.select_currency(user_id)} \nЦена за кВТ/ч : {botdb.select_pay(user_id)} {botdb.select_currency(user_id)}</b>', parse_mode='html')
+        botdb.update_pay(user_id,pay)
+        botdb.update_cur(user_id, currency)
+        bot.send_message(message.chat.id, f'Выбран 🇷🇺\nАвтоматически выставлены стандартные настройки:\n<b>Валюта : {botdb.select_currency(user_id)} \nЦена за кВТ/ч : 4.9 RUB ={botdb.select_pay(user_id)} {botdb.select_currency(user_id)}</b>\n\n✍Изменить параметры (валюту и цену) можно в настройках' , parse_mode='html')
         menu(message)
 
     elif message.text == '🇺🇸':
         language = '🇺🇸'
         botdb.insert_users(user_id, language, currency, pay)
-        bot.send_message(message.chat.id, f'Selected 🇺🇸\n The default settings are set automatically:\n <b> Currency : {botdb.select_currency(user_id)} \nPrice per kW/h : {botdb.select_pay(user_id)} {botdb.select_currency(user_id)}</b>', parse_mode='html')
+        botdb.update_pay(user_id, pay)
+        botdb.update_cur(user_id,currency)
+        bot.send_message(message.chat.id, f'Selected 🇺🇸\nThe default settings are set automatically:\n<b>Currency : {botdb.select_currency(user_id)} \nPrice per kW/h : 4.9 RUB ={botdb.select_pay(user_id)} {botdb.select_currency(user_id)}</b>\n\n✍You can change the parameters (currency and price) in the settings', parse_mode='html')
         menu(message)
 
     else:
@@ -150,7 +154,7 @@ def call_minerlist(message):
         else:
             currency = botdb.select_currency(user_id)
             Minername = API.api_minerinfo(wordsminer)
-            btc_th = float(0.00000461)
+            btc_th = float(0.00000429)
             pay = float(botdb.select_pay(user_id))
             data= words.message['datainfo'][lang]
             dif= words.message['difbit'][lang]
@@ -169,11 +173,11 @@ def call_minerlist(message):
             curapi = float(apicurrency.currency_data1(currency))
             th = float(API.api_minerth(wordsminer))
             mes = float(30.33)
-            dohod = int(btc_th*th*mes*btcapi*curapi)
+            dohod = round(float(btc_th*th*mes*btcapi*curapi),2)
             rashod = round(float(API.api_minerenergy(wordsminer))*24*mes*pay,2)
-            cash = dohod - rashod
+            cash = round(dohod - rashod,2)
             minercost = apicurrency.currency_data1(currency) * API.api_minercost(wordsminer)
-            okup = int(minercost / cash)
+            okup = round(float(minercost / cash))
             calcmenu = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=1)
             markup1 = types.KeyboardButton(words.message['selectotherminer'][lang])
             markup2 = types.KeyboardButton(words.message['settings_menu'][lang])
@@ -212,7 +216,8 @@ def settings_list(message):
         USD = types.KeyboardButton('USD')
         EUR = types.KeyboardButton('EUR')
         KZT = types.KeyboardButton('KZT')
-        curset.add(RUB,USD,EUR,KZT)
+        back = types.KeyboardButton(words.message['back'][lang])
+        curset.add(RUB,USD,EUR,KZT,back)
         msg = bot.send_message(message.chat.id, words.message['setcur'][lang], reply_markup=curset)
         bot.register_next_step_handler(msg, settings_cur)
     elif message.text == words.message['update_pay'][lang]:
@@ -272,6 +277,11 @@ def settings_cur(message):
         botdb.update_cur(user_id, currency)
         bot.send_message(message.chat.id, f'{messageset} {currency}')
         menu(message)
+    elif message.text == words.message['back'][lang]:
+        menu(message)
+    else:
+        msg = bot.send_message(message.chat.id, words.message['error'][lang])
+        bot.register_next_step_handler(msg, settings_cur)
 
 def settings_pay(message):
     pay = message.text
