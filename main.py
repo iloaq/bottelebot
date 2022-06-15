@@ -6,6 +6,7 @@ from database import DB
 import words
 import API
 import apicurrency
+import mathrew
 
 bot = telebot.TeleBot('5505744557:AAFAF1qlsOAG3XXwhhFOTkIZbs_bUR9bDr0')
 botdb = DB()
@@ -86,7 +87,7 @@ def call_menu(message):
         miner16 = types.KeyboardButton(words.miner['MicroBT Whatsminer M31s 72T']['text'])
         miner17 = types.KeyboardButton(words.miner['MicroBT Whatsminer M31s 78T']['text'])
         miner18 = types.KeyboardButton(words.miner['MicroBT Whatsminer M31s 80T']['text'])
-        minerlist.add(back,miner1,miner2,miner3,miner4,miner5,miner6,miner7,miner8,miner9,miner10,miner11,miner12,miner13,miner14,miner15,miner16,miner17,miner18)
+        minerlist.add(back,miner1,miner2,miner3,miner4,miner15,miner14,miner13,miner12,miner11,miner10,miner9,miner18,miner17,miner16,miner5,miner8,miner7,miner6)
         msg = bot.send_message(message.chat.id, words.message['selectminer'][lang],reply_markup=minerlist)
         bot.register_next_step_handler(msg, call_minerlist)
     elif message.text == words.message['settings_menu'][lang]:
@@ -126,7 +127,7 @@ def call_menu(message):
                                               '\n'
                                               f'4. Order mining equipment by writing\n@diana_miningbtc '
                                               '\n'
-                                              f'Subscribe to our Telegram Channel\nhttps://t.me/mining4you_ru\nCheck out the terms of purchase and hosting in ourdata center on our website\nhttps://mining4-you.com/'
+                                              f'Subscribe to our Telegram Channel\nhttps://t.me/mining4you_ru\nCheck out the terms of purchase and hosting in ourdata center on our website\nhttps://mining4-you.com/en/'
                              )
             menu(message)
 
@@ -154,7 +155,9 @@ def call_minerlist(message):
         else:
             currency = botdb.select_currency(user_id)
             Minername = API.api_minerinfo(wordsminer)
-            btc_th = float(0.00000429)
+            btc_th = float(mathrew.api_rew())
+            api_btc = round(float(apibtc.api_btc()), 2)
+            api_btc1= f'{api_btc:,.2f}'.replace(',', ' ')
             pay = float(botdb.select_pay(user_id))
             data= words.message['datainfo'][lang]
             dif= words.message['difbit'][lang]
@@ -172,31 +175,37 @@ def call_minerlist(message):
             btcapi = float(apibtc.api_btc())
             curapi = float(apicurrency.currency_data1(currency))
             th = float(API.api_minerth(wordsminer))
+            th1 = API.api_minerth(wordsminer)
             mes = float(30.33)
             dohod = round(float(btc_th*th*mes*btcapi*curapi),2)
+            dohod1=f'{dohod:,.2f}'.replace(',', ' ')
             rashod = round(float(API.api_minerenergy(wordsminer))*24*mes*pay,2)
+            rashod1=f'{rashod:,.2f}'.replace(',', ' ')
             cash = round(dohod - rashod,2)
+            cash1=f'{cash:,.2f}'.replace(',', ' ')
             minercost = apicurrency.currency_data1(currency) * API.api_minercost(wordsminer)
             okup = round(float(minercost / cash))
+            wordiana=words.message['worddiana'][lang]
+            site=words.message['site'][lang]
             calcmenu = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=1)
             markup1 = types.KeyboardButton(words.message['selectotherminer'][lang])
             markup2 = types.KeyboardButton(words.message['settings_menu'][lang])
             markup3 = types.KeyboardButton(words.message['back_menu'][lang])
             calcmenu.add(markup1,markup2,markup3)
-            msg = bot.send_message(message.chat.id, f'<b>{paydohod}: {dohod} {currency}</b>💰\n'
-                                                    f'{payrashod}: {rashod} {currency}💵\n'
-                                                    f'<b>{payprib}: {cash} {currency}</b>\n'
+            msg = bot.send_message(message.chat.id, f'<b>{paydohod}: {dohod1} {currency}</b>💰\n'
+                                                    f'{payrashod}: {rashod1} {currency}💵\n'
+                                                    f'<b>{payprib}: {cash1} {currency}</b>\n'
                                                     f'{payokup}: {okup}\n'
                                                     '\n'
                                                     f'{data}\n'
                                                     f'📆{words.time_get()}\n'
-                                                    f'{minermdoel} - <b>{Minername} ({th})</b>\n'
+                                                    f'{minermdoel} - <b>{Minername} {th1} TH</b>\n'
                                                     f'{paywords} - <b>{pay} {currency}</b>📌\n'
                                                     '\n'
-                                                    f'{wordcourse} 1 BTC = {round(float(apibtc.api_btc()), 2)} USD\n'
+                                                    f'{wordcourse} 1 BTC = {api_btc1} USD\n'
                                                     f'{coursetoday} 1$ = {apicurrency.currency_data1(currency)} {currency}\n'
                                                     f'{dif} {apibtc.get_difficulty()}\n'
-                                                    f'{block} {apibtc.get_rewards()} BTC\n\n\nЗаказать майнеры @diana_miningbtc \n🌐http://mining4-you.com', reply_markup=calcmenu,parse_mode="html"
+                                                    f'{block} {apibtc.get_rewards()} BTC\n\n\n{wordiana} @diana_miningbtc \n🌐{site}', reply_markup=calcmenu,parse_mode="html"
                                    )
             bot.register_next_step_handler(msg, call_menu)
 
@@ -209,7 +218,7 @@ def settings_list(message):
         en = types.KeyboardButton('🇺🇸')
         langset.add(ru, en)
         msg = bot.send_message(message.chat.id, words.message['setlang'][lang], reply_markup=langset)
-        bot.register_next_step_handler(msg, insert_data)
+        bot.register_next_step_handler(msg, settings_lang)
     elif message.text == words.message['update_cur'][lang]:
         curset = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=1)
         RUB = types.KeyboardButton('RUB')
@@ -258,22 +267,30 @@ def settings_lang(message):
 def settings_cur(message):
     messageset = words.message['messageset'][lang]
     if message.text == 'RUB':
+        pay=4.9
         currency = 'RUB'
         botdb.update_cur(user_id,currency)
+        botdb.update_pay(user_id,pay)
         bot.send_message(message.chat.id, f'{messageset} {currency}')
         menu(message)
     elif message.text == 'USD':
+        pay=round(float(4.9/apicurrency.currency_data1('RUB')),3)
         currency = 'USD'
         botdb.update_cur(user_id, currency)
+        botdb.update_pay(user_id, pay)
         bot.send_message(message.chat.id, f'{messageset} {currency}')
         menu(message)
     elif message.text == 'EUR':
+        pay = round(float(4.9 / apicurrency.currency_data1('RUB')*apicurrency.currency_data1('EUR')), 3)
         currency = 'EUR'
+        botdb.update_pay(user_id, pay)
         botdb.update_cur(user_id, currency)
         bot.send_message(message.chat.id, f'{messageset} {currency}')
         menu(message)
     elif message.text == 'KZT':
+        pay = round(float(4.9 / apicurrency.currency_data1('RUB') * apicurrency.currency_data1('KZT')), 3)
         currency = 'KZT'
+        botdb.update_cur(user_id, currency)
         botdb.update_cur(user_id, currency)
         bot.send_message(message.chat.id, f'{messageset} {currency}')
         menu(message)
@@ -301,10 +318,12 @@ def settings_pay(message):
 
 @bot.message_handler(content_types='text')
 def restart(message):
+    user_id=message.chat.id
+    lang=botdb.select_lang(user_id)
     commandre = types.ReplyKeyboardMarkup()
     but1=types.KeyboardButton('/start')
     but2=types.KeyboardButton('/menu')
     commandre.add(but2,but1)
-    bot.send_message(message.chat.id,'Произошла ошибка', reply_markup=commandre)
+    bot.send_message(message.chat.id, words.message['error'][lang], reply_markup=commandre)
 
 bot.polling(none_stop=True)

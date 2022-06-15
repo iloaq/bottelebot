@@ -1,20 +1,10 @@
-import requests
+import apibtc
 
-url = "https://api-prod.poolin.com/api/public/v2/platform/cloud/{puid}/transfer"
+t=86400
+R=apibtc.get_rewards()
+H=1000000000000
+D=apibtc.get_difficulty()
+step=4294967296
+threw=(t*R*H)/(D*step)
 
-payload={'coin_type': 'eth',
-'unit': 'M',
-'hashrate': '1',
-'to': 'laxxe',
-'start_time': '1635566400',
-'end_time': '1636689600'}
-files=[
-
-]
-headers = {
-  'authorization': 'Bearer poolOt4dpKTUMiyIgGw0MihfQ9*************************04PeuppZyOaTC'
-}
-
-response = requests.request("POST", url, headers=headers, data=payload, files=files)
-
-print(response.text)
+print('{:0.8f}'.format(threw))
