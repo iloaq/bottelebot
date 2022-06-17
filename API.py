@@ -25,8 +25,12 @@ def api_miners(calcin):
     return prods
 
 def api_minerenergy(calcin):
-    minerenergy = wcapi.get(f'products?slug={calcin}').json()
-    return minerenergy[0]['attributes'][1]['options'][0]
+    if calcin == 'antminer-s19xp':
+        minerenergy = wcapi.get(f'products?slug={calcin}').json()
+        return minerenergy[0]['attributes'][2]['options'][0]
+    else:
+        minerenergy = wcapi.get(f'products?slug={calcin}').json()
+        return minerenergy[0]['attributes'][1]['options'][0]
 
 def api_minerth(calcin):
     minerth = wcapi.get(f'products?slug={calcin}').json()
@@ -34,7 +38,12 @@ def api_minerth(calcin):
 
 def api_minercost(calcin):
     datacost = wcapi.get(f'products?slug={calcin}').json()
-    cost = float(datacost[0]['price'])
+    if calcin == 'antminer-s19xp':
+        umn = float(datacost[0]['price'])
+        cost = umn * apicurrency.currency_data1('RUB')
+    else:
+        cost = float(datacost[0]['price'])
+
     cur = float(apicurrency.currency_data1('RUB'))
     minercost = float(cost / cur)
     return minercost
