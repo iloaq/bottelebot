@@ -11,6 +11,7 @@ miner = {'Bitmain Antminer S19j Pro 110T':{'text':'Bitmain Antminer S19j Pro 110
          'Bitmain Antminer S19j Pro 104T': {'text': 'Bitmain Antminer S19j Pro 104T', 'api': 'antminer-s19j-pro-104th'},
          'Bitmain Antminer S19j Pro 100T': {'text': 'Bitmain Antminer S19j Pro 100T', 'api': 'antminer-s19j-pro-100th'},
          'Bitmain Antminer S19 86T': {'text': 'Bitmain Antminer S19 86T', 'api': 'antminer-s19'},
+         'Antminer S19XP 140T': {'text': 'Antminer S19XP 140T', 'api': 'antminer-s19xp'},
          'MicroBT Whatsminer M20s 68T': {'text': 'MicroBT Whatsminer M20s 68T', 'api': 'whatsminer-m20s'},
          'MicroBT Whatsminer M21s 54T': {'text': 'MicroBT Whatsminer M21s 54T', 'api': 'whatsminer-m21s'},
          'MicroBT Whatsminer M21s 56T': {'text': 'MicroBT Whatsminer M21s 56T', 'api': 'whatsminer-m21s-2'},

@@ -87,7 +87,8 @@ def call_menu(message):
         miner16 = types.KeyboardButton(words.miner['MicroBT Whatsminer M31s 72T']['text'])
         miner17 = types.KeyboardButton(words.miner['MicroBT Whatsminer M31s 78T']['text'])
         miner18 = types.KeyboardButton(words.miner['MicroBT Whatsminer M31s 80T']['text'])
-        minerlist.add(back,miner1,miner2,miner3,miner4,miner15,miner14,miner13,miner12,miner11,miner10,miner9,miner18,miner17,miner16,miner5,miner8,miner7,miner6)
+        miner19 = types.KeyboardButton(words.miner['Antminer S19XP 140T']['text'])
+        minerlist.add(back,miner19,miner1,miner2,miner3,miner4,miner15,miner14,miner13,miner12,miner11,miner10,miner9,miner18,miner17,miner16,miner5,miner8,miner7,miner6)
         msg = bot.send_message(message.chat.id, words.message['selectminer'][lang],reply_markup=minerlist)
         bot.register_next_step_handler(msg, call_minerlist)
     elif message.text == words.message['settings_menu'][lang]:
